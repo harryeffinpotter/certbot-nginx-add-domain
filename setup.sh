@@ -19,6 +19,7 @@ while true; do
     read email
     if [ -n $email ]; then
         echo "email=$email" > "$(pwd)/.env"
+        echo "Created .env file"
         break
     fi
     echo "You didn't enter anything?"
