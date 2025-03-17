@@ -11,7 +11,9 @@ if ! ls /etc/nginx > /dev/null; then
 fi
 
 echo "Moving nginx.conf template to /etc/nginx"
-sudo cp -a "${current_directory}"/nginx.conf /etc/nginx/
+sudo ./insert.sh
+sudo cp -a "${current_directory}"/nginx_template.conf /etc/nginx/nginx_template.conf
+sudo mkdir /etc/nginx/conf.d
 echo "Moving add_domain to /usr/bin"
 sudo cp -a  "${current_directory}"/add_domain.sh /usr/bin/add-domain
 while true; do
@@ -25,5 +27,5 @@ while true; do
     echo "You didn't enter anything?"
 done
 echo "Finished setup"
-echo -e "\nUsage:\nsudo add-domain subdomain.domain.com <port number of service>\nsudo add-domain test.mydomain.net 6969"
+echo -e "\nUsage:\nsudo add-domain subdomain.domain.com <port number of service>\n\nEXAMPLE:\nsudo add-domain test.mydomain.net 6969"
 
