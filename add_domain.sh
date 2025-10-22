@@ -5,24 +5,32 @@ if [[ $(/usr/bin/id -u) -ne 0 ]]; then
     exit 1
 fi
 cd /etc/nginx
-if [ "$#" -ne 2 ]; then
-    echo "Usage: $0 <domain> <port>"
+if [ "$#" -lt 2 ]; then
+    echo "Usage: $0 <domain> <port> [-s|--skip-cert]"
     exit 1
 fi
 
 DOMAIN=$1
 PORT=$2
+SKIP_CERT=false
 
+# Check for --skip-cert or -s flag
+if [ "$#" -eq 3 ] && { [ "$3" == "--skip-cert" ] || [ "$3" == "-s" ]; }; then
+    SKIP_CERT=true
+    echo "Skipping certbot - will only create nginx config..."
+fi
 
-echo "Registering the domain with certbot..."
-if ! sudo certbot certonly --non-interactive --nginx -d "${1}" --agree-tos -m "${email}" --force-renewal
-then
-    echo -e "Certbot failed, attempt runn ing the following line manually and viewing the output:\n\nsudo certbot -d $1\n\n"
-    sleep 3
-    echo "Do you still want to create config file in /etc/nginx/conf.d (if you plan on manually certifying as suggested) [y/n]?"
-    read response
-    if [[ ${response} == "N" ]] || [[ ${response} == "n" ]]; then
-        exit
+if [ "$SKIP_CERT" == false ]; then
+    echo "Registering the domain with certbot..."
+    if ! sudo certbot certonly --non-interactive --nginx -d "${1}" --agree-tos -m "${email}" --force-renewal
+    then
+        echo -e "Certbot failed, attempt runn ing the following line manually and viewing the output:\n\nsudo certbot -d $1\n\n"
+        sleep 3
+        echo "Do you still want to create config file in /etc/nginx/conf.d (if you plan on manually certifying as suggested) [y/n]?"
+        read response
+        if [[ ${response} == "N" ]] || [[ ${response} == "n" ]]; then
+            exit
+        fi
     fi
 fi
 # Read the template and replace placeholders with actual values

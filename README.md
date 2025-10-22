@@ -73,6 +73,13 @@ For subdomains:
 sudo add-domain sub.yourdomain.com 3000
 ```
 
+To create the nginx config WITHOUT running certbot (for domains you've already certified separately):
+```bash
+sudo add-domain yourdomain.com 8080 --skip-cert
+# or use the shortcut:
+sudo add-domain yourdomain.com 8080 -s
+```
+
 ## 🛠️ How It Works
 
 1. The script checks for root privileges
